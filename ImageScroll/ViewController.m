@@ -44,9 +44,35 @@
     self.pageControl.numberOfPages = 3;
     //5.设置当前页
     self.ImageScroll.delegate = self;
+    //定时器：
+    //1.NSTimer：可以设定时间，一般执行间隔较长时间的操作
+    //2.CADisplayLink：表示刷帧，一般一秒钟执行多次方法，一般和动画配合使用（此处不适用）
+    
+    //6.添加定时器
+    //scheduledTimerWithTimeInterval表示每个多长时间执行方法
+    //selector：表示要执行的方法
+    //target：表示谁来调用此方法
+    //repeat：表示是否重复
+    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(nextPage) userInfo:nil repeats:YES];
+    
     
 }
 
+-(void) nextPage
+{
+    //1.记录当前页数
+    NSInteger currnetPage = self.pageControl.currentPage;
+    if (currnetPage==2) {
+        currnetPage = 0;
+    }
+    else
+    {
+        currnetPage++;
+    }
+    //2.根据当前页数确定滚动范围，切页
+    //self.ImageScroll.contentOffset = CGPointMake(currnetPage*self.ImageScroll.frame.size.width, 0);
+    [self.ImageScroll setContentOffset:CGPointMake(currnetPage*self.ImageScroll.frame.size.width, 0) animated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -68,7 +94,7 @@
         CGFloat offSetX = offSet.x;
         CGFloat scrollW = scrollView.frame.size.width;
 //    2.算出页码
-        int page = offSetX/scrollW+0.5;//偏移量超过0.5，把它算作一页
+        int page = (offSetX+0.5*scrollW)/scrollW;//偏移量超过0.5，把它算作一页
         self.pageControl.currentPage = page;
 }
 
