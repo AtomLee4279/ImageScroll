@@ -63,7 +63,7 @@
     NSInteger currnetPage = self.pageControl.currentPage;
     if (currnetPage==2) {
         currnetPage = 0;
-    }
+    } 
     else
     {
         currnetPage++;
@@ -101,6 +101,7 @@
 {
     //创建定时器
     [self addTimer];
+    [[NSRunLoop currentRunLoop] addTimer:_timer forMode:(NSRunLoopCommonModes)];
 }
 
 
