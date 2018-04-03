@@ -12,7 +12,7 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *ImageScroll;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
-
+@property (strong,nonatomic)NSTimer* timer;
 @end
 
 @implementation ViewController
@@ -53,9 +53,8 @@
     //selector：表示要执行的方法
     //target：表示谁来调用此方法
     //repeat：表示是否重复
-    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(nextPage) userInfo:nil repeats:YES];
-    
-    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(nextPage) userInfo:nil repeats:YES];
+    _timer = timer;//用成员属性保存timer
 }
 
 -(void) nextPage
@@ -78,15 +77,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-//-（void）scrollViewDidScroll:(UIScrollView *)scrollView
-//{
-//    //1.获取滚动的偏移量
-//    CGPoint offSet = self.ImageScroll.contentOffset;
-//    CGFloat offSetX = offSet.x;
-//    CGFloat scrollW = scrollView.frame.size.width;
-//    self.pageControl.currentPage = offSetX/scrollW;
-//}
 
+//拖拽完成
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 //    1.获取滚动的偏移量
@@ -98,5 +90,31 @@
         self.pageControl.currentPage = page;
 }
 
+//开始拖拽
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    //1.停止定时器,定时器停止后不能重新开始，我们要想使用，需要重新创建一个定时器
+    [self removeTimer];
+}
+//结束拖拽
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    //创建定时器
+    [self addTimer];
+}
 
+
+//添加定时器
+-(void)addTimer
+{
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(nextPage) userInfo:nil repeats:YES];
+    _timer = timer;//用成员属性保存timer
+}
+
+//移除定时器
+-(void)removeTimer
+{
+    [_timer invalidate];//停止
+    self.timer = nil;//既然不能用了就要nil它
+}
 @end
