@@ -36,9 +36,15 @@
         NSString *imageName = [NSString stringWithFormat:@"%d",i+1];
         imageView.image = [UIImage imageNamed:imageName];
     }
-    //设置滚动范围
+    //2.设置滚动范围
     self.ImageScroll.contentSize = CGSizeMake(imageViewW*3, 0);
+    //3.设置分页
     self.ImageScroll.pagingEnabled = YES;
+    //4.设置总的页码数
+    self.pageControl.numberOfPages = 3;
+    //5.设置当前页
+    self.ImageScroll.delegate = self;
+    
 }
 
 
@@ -46,13 +52,25 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//-（void）scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//    //1.获取滚动的偏移量
+//    CGPoint offSet = self.ImageScroll.contentOffset;
+//    CGFloat offSetX = offSet.x;
+//    CGFloat scrollW = scrollView.frame.size.width;
+//    self.pageControl.currentPage = offSetX/scrollW;
+//}
 
-//调用结束拖拽的方法
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    NSLog(@"结束拖拽");
-    
-    
+//    1.获取滚动的偏移量
+        CGPoint offSet = self.ImageScroll.contentOffset;
+        CGFloat offSetX = offSet.x;
+        CGFloat scrollW = scrollView.frame.size.width;
+//    2.算出页码
+        int page = offSetX/scrollW+0.5;//偏移量超过0.5，把它算作一页
+        self.pageControl.currentPage = page;
 }
+
 
 @end
